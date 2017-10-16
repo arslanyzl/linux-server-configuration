@@ -29,6 +29,14 @@ You will take a baseline installation of a Linux server and prepare it to host y
 2. Change to Port 2200.
 3. Change `PermitRootLogin` from `without-password` to `no`.
 4. Append `AllowUsers NEWUSER`.  
+
+### 5. Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
+
+    sudo ufw allow 2200/tcp
+	  sudo ufw allow 80/tcp
+	  sudo ufw allow 123/udp
+	  sudo ufw enable   
+
   
 ### 3 & 4 - User Management: Create a new user and give user the permission to sudo
 Source: [DigitalOcean][4]  
