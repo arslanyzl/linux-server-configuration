@@ -7,8 +7,8 @@ You will take a baseline installation of a Linux server and prepare it to host y
 
 ### 1 & 2 - Start a new Ubuntu Linux server instance on Amazon Lightsail
 
-1. Create new instance on Amazon Lightsail.[Udacity][https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e]
-2. Download private keys and write down your public IP address.
+1. Create new instance on Amazon Lightsail. [Udacity][https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e]
+2. Download private keys from Amazon Lightsail.
 3. Move the private key file on local machine into the folder: ~/.ssh
 4. Set file rights:  
   `$ chmod 600 ~/.ssh/name-of-privet-key`
