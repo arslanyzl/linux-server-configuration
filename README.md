@@ -13,7 +13,7 @@ You will take a baseline installation of a Linux server and prepare it to host y
 4. Set file rights:  
   `$ chmod 600 ~/.ssh/name-of-privet-key`
 5. SSH into the instance:  
-  `<pre>$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@PUPLIC-IP-ADDRESS`
+  `$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@PUPLIC-IP-ADDRESS`
   
 ### 3. Update all currently installed packages.
 
@@ -44,9 +44,23 @@ You will take a baseline installation of a Linux server and prepare it to host y
 Add the following text 'grader ALL=(ALL:ALL) ALL'
 
 ### 8. Create an SSH key pair for grader using the ssh-keygen tool.
-1. On your local machine : '$ ssh-keygen'
+1. On your local machine run: 
+	'$ ssh-keygen'
+2. Genarated key located in your local machine .shh directory, copy contain of this file to '/home/grader/.ssh/authorized_keys' 
+3. Restart ssh with `sudo service ssh restart`
+4. Now you are only able to login using `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@PUPLIC-IP-ADDRESS`
+	
+### 9. Configure the local timezone to UTC.
+Configure the time zone `sudo dpkg-reconfigure tzdata`
 
-  
+### 10. Install and configure Apache to serve a Python mod_wsgi application.
+1. Install Apache `sudo apt-get install apache2`
+2. Install mod_wsgi `sudo apt-get install python-setuptools libapache2-mod-wsgi`
+3. Restart Apache `sudo service apache2 restart`
+
+### 11. Install and configure PostgreSQL
+
+
 ### 3 & 4 - User Management: Create a new user and give user the permission to sudo
 Source: [DigitalOcean][4]  
 
