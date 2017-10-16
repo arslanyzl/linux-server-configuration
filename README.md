@@ -31,11 +31,20 @@ You will take a baseline installation of a Linux server and prepare it to host y
 4. Append `AllowUsers NEWUSER`.  
 
 ### 5. Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
+         $ sudo ufw allow 2200/tcp
+	 $ sudo ufw allow 80/tcp
+	 $ sudo ufw allow 123/udp
+	 $ sudo ufw enable   
+	 
+### 6. Create a new user account named grader.
+	$ sudo adduser grader
 
-    sudo ufw allow 2200/tcp
-	  sudo ufw allow 80/tcp
-	  sudo ufw allow 123/udp
-	  sudo ufw enable   
+### 7. Give grader the permission to sudo.
+	$ sudo nano /etc/sudoers.d/grader
+Add the following text 'grader ALL=(ALL:ALL) ALL'
+
+### 8. Create an SSH key pair for grader using the ssh-keygen tool.
+1. On your local machine : '$ ssh-keygen'
 
   
 ### 3 & 4 - User Management: Create a new user and give user the permission to sudo
