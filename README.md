@@ -7,7 +7,7 @@ You will take a baseline installation of a Linux server and prepare it to host y
 
 ### 1 & 2 - Start a new Ubuntu Linux server instance on Amazon Lightsail
 
-1. Create new instance on Amazon Lightsail. [Udacity][https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e]
+1. Create new instance on Amazon Lightsail. [Udacity](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e)
 2. Download private keys from Amazon Lightsail.
 3. Move the private key file on local machine into the folder: ~/.ssh
 4. Set file rights:  
@@ -24,6 +24,12 @@ You will take a baseline installation of a Linux server and prepare it to host y
 
 ### 4. Change the SSH port from 22 to 2200. Make sure to configure the Lightsail firewall to allow it.
 
+1. Open the config file:  
+    `$ sudo nano /etc/ssh/sshd_config`  
+2. Change to Port 2200.
+3. Change `PermitRootLogin` from `without-password` to `no`.
+4. Append `AllowUsers NEWUSER`.  
+  
 ### 3 & 4 - User Management: Create a new user and give user the permission to sudo
 Source: [DigitalOcean][4]  
 
@@ -57,14 +63,7 @@ Source: [Ubuntu documentation][7]
 Source: [Ask Ubuntu][8]  
 
 1. Change ssh config file:
-  1. Open the config file:  
-    `$ vim /etc/ssh/sshd_config` 
-  2. Change to Port 2200.
-  3. Change `PermitRootLogin` from `without-password` to `no`.
-  4. * To get more detailed logging messasges, open `/var/log/auth.log` and change LogLevel from `INFO` to `VERBOSE`. 
-  5. Temporalily change `PasswordAuthentication` from `no` to `yes`.
-  6. Append `UseDNS no`.
-  7. Append `AllowUsers NEWUSER`.  
+  
 **Note:** All options on [UNIXhelp][9]
 2. Restart SSH Service:  
   `$ /etc/init.d/ssh restart` or `# service sshd restart` 
