@@ -1,22 +1,28 @@
 # Linux-Server-Configuration
 
+Visit deployed Web App: http://13.58.112.171/
 
-## Step by Step Walkthrough
-In the detailed guide below I tried to briefly document the steps I executed to get to the projects solution. The numbering and headlines should be congruent to the projects tasks 1-11. Please read through the linked sources to fully understand what is done in those steps. The walkthrough is surely far from perfect and I'm thankful for any feedback, reported errors, advice, etc. I get on this. 
+## Project Overview
+You will take a baseline installation of a Linux server and prepare it to host your web applications. You will secure your server from a number of attack vectors, install and configure a database server, and deploy one of your existing web applications onto it.
 
-The parts which are not necessarily needed are marked with a \*, the ones which only need to be done for extra credit ('suceeds expectations') are marked with \*\*. I used vim as text editor in this guide, but you can surely use another one like nano. Have fun!
+### 1 & 2 - Start a new Ubuntu Linux server instance on Amazon Lightsail
 
-### 1 & 2 - Create Development Environment: Launch Virtual Machine and SSH into the server
-Source: [Udacity][3]  
-
-1. Create new development environment.
+1. Create new instance on Amazon Lightsail.[Udacity][https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e]
 2. Download private keys and write down your public IP address.
-3. Move the private key file into the folder ~/.ssh:  
-  `$ mv ~/Downloads/udacity_key.rsa ~/.ssh/`
-4. Set file rights (only owner can write and read.):  
-  `$ chmod 600 ~/.ssh/udacity_key.rsa`
+3. Move the private key file on local machine into the folder: ~/.ssh
+4. Set file rights:  
+  `$ chmod 600 ~/.ssh/name-of-privet-key`
 5. SSH into the instance:  
-  `<pre>$ ssh -i ~/.ssh/udacity_key.rsa root@PUPLIC-IP-ADDRESS`
+  `<pre>$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@PUPLIC-IP-ADDRESS`
+  
+### 3. Update all currently installed packages.
+
+1. Update the list of available packages:  
+  `$ sudo apt-get update`
+2. Install newer vesions of packages you have:  
+  `$ sudo sudo apt-get upgrade`
+
+### 4. Change the SSH port from 22 to 2200. Make sure to configure the Lightsail firewall to allow it.
 
 ### 3 & 4 - User Management: Create a new user and give user the permission to sudo
 Source: [DigitalOcean][4]  
