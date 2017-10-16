@@ -59,229 +59,55 @@ Configure the time zone `sudo dpkg-reconfigure tzdata`
 3. Restart Apache `sudo service apache2 restart`
 
 ### 11. Install and configure PostgreSQL
+1. Install PostgreSQL `sudo apt-get install postgresql postgresql-contrib`
+2. Create linux user for psql:  
+  `$ sudo adduser catalog` (choose a password)
+3. Change user to postgres:  
+  `$ sudo su - postgres`
+4. Connect to the system by typing:  
+  `$ psql`
+- `# CREATE USER catalog WITH PASSWORD 'password';` 
+- `# ALTER USER catalog CREATEDB;`
+- `# CREATE DATABASE catalog WITH OWNER catalog;`
+- `# \c catalog` 
+- `# REVOKE ALL ON SCHEMA public FROM public;`
+- `# GRANT ALL ON SCHEMA public TO catalog;`
+- `# \q`
+- `$ exit` 
 
-
-### 3 & 4 - User Management: Create a new user and give user the permission to sudo
-Source: [DigitalOcean][4]  
-
-1. Create a new user:  
-  `$ adduser NEWUSER`
-2. Give new user the permission to sudo
-  1. Open the sudo configuration:  
-    `$ visudo`
-  2. Add the following line below `root ALL...`:  
-    `NEWUSER ALL=(ALL:ALL) ALL`
-  3. *List all users (Source: [Ask Ubuntu][5]):    
-    `$ cut -d: -f1 /etc/passwd`
-
-### 5 - Update and upgrade all currently installed packages
-Source: [Ask Ubuntu][6]  
-    
-1. Update the list of available packages and their versions:  
-  `$ sudo apt-get update`
-2. Install newer vesions of packages you have:  
-  `$ sudo sudo apt-get upgrade`
-
-#### 5** - Include cron scripts to automatically manage package updates
-Source: [Ubuntu documentation][7]  
-
-1. Install the unattended-upgrades package:  
-  `$ sudo apt-get install unattended-upgrades`
-2. Enable the unattended-upgrades package:  
-  `$ sudo dpkg-reconfigure -plow unattended-upgrades`
-
-### 6 - Change the SSH port from 22 to 2200 and configure SSH access
-Source: [Ask Ubuntu][8]  
-
-1. Change ssh config file:
-  
-**Note:** All options on [UNIXhelp][9]
-2. Restart SSH Service:  
-  `$ /etc/init.d/ssh restart` or `# service sshd restart` 
-3. Create SSH Keys:  
-  Source: [DigitalOcean][10]  
-
-  1. Generate a SSH key pair on the local machine:  
-    `$ ssh-keygen`
-  2. Copy the public id to the server:  
-    `$ ssh-copy-id username@remote_host -p**_PORTNUMBER_**`
-  3. Login with the new user:  
-    `$ ssh -v grader@PUBLIC-IP-ADDRESS -p2200`
-  4. Open SSHD config:  
-    `$ sudo vim /etc/ssh/sshd_config`
-  5. Change `PasswordAuthentication` back from `yes` to `no`.
-4. *Get rid of the warning message `sudo: unable to resolve host ...` when sudo is executed:  
-Source: [Ask Ubuntu][11]  
-
-  1. Open `$ vim /etc/hostname`.
-  2. Copy the hostname.
-  3. Append the hostname to the first line:  
-    `$ sudo sudonano /etc/hosts`
-5. * Simplify SSH login:  
-  1. Logout of the SSH instance:  
-    `$ exit`
-  2. Open the SSH config file on your local machine:  
-    `$ sudo vim .ssh/config`
-  3. Add the following lines:  
-    ```
-    Host NEWHOSTNAME
-      HostName PUPLIC-IP-ADDRESS
-      Port 2200
-      User NEWUSER
-    ```
-  4. Now, you can login into the server more quickly:  
-    `$ ssh NEWHOSTNAME`
-6. *Handle the message `System restart required` after login:  
-Source: [Super User][12]  
-
-  1. List all packages which cause the reboot:  
-    `$ cat /var/run/reboot-required.pkgs`
-  2. List everything with high security issues:  
-    `$ xargs aptitude changelog < /var/run/reboot-required.pkgs | grep urgency=high`
-  3. If wanted or needed, reboot the system:  
-    `$ sudo shutdown -r now`  
-    **Note**: More info on rebooting on [Ask Ubuntu][13].
-
-### 7 - Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123)
-Source: [Ubuntu documentation][14]  
-
-1. Turn UFW on with the default set of rules:  
-  `$ sudo ufw enable` 
-2. *Check the status of UFW:  
-  `$ sudo ufw status verbose`
-3. Allow incoming TCP packets on port 2200 (SSH):  
-  `$ sudo ufw allow 2200/tcp` 
-4. Allow incoming TCP packets on port 80 (HTTP):  
-  `$ sudo ufw allow 80/tcp` 
-5. Allow incoming UDP packets on port 123 (NTP):  
-  `$ sudo ufw allow 123/udp`  
-
-#### 7** - Configure Firewall to monitor for repeated unsuccessful login attempts and ban attackers
-Source: [DigitalOcean][15]  
-
-1. Install Fail2ban:  
-  `$ sudo apt-get install fail2ban`
-2. Copy the default config file:  
-  `$ sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local`
-3. Check and change the default parameters:  
-    1. Open the local config file:  
-      `$ sudo vim /etc/fail2ban/jail.local`
-    2. Set the following Parameters:  
-    ```  
-      set bantime  = 1800  
-      destemail = YOURNAME@DOMAIN  
-      action = %(action_mwl)s  
-      under [ssh] change port = 2220  
-    ```  
-    
-  **Note:** In the next three steps *iptables* is installed. However, the before installed UFW [is actually a frontend for iptables](https://wiki.ubuntu.com/UncomplicatedFirewall) and is set up already. So configuring *iptables* separately (as I did by just following the guide at DigitalOcean) would be a redundant step. So just install *sendmail* and go on with step 7.
-
-4. Install needed software for our configuration:  
-  `$ sudo apt-get install sendmail iptables-persistent` 
-5. Set up a basic firewall only allowing connections from the above ports:  
-  `$ sudo iptables -A INPUT -i lo -j ACCEPT`  
-  `$ sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT`  
-  `$ sudo iptables -A INPUT -p tcp --dport 2200 -j ACCEPT`  
-  `$ sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT`  
-  `$ sudo iptables -A INPUT -p udp --dport 123 -j ACCEPT`  
-  `$ sudo iptables -A INPUT -j DROP`  
-6. *Check the current firewall rules:  
-  `$ sudo iptables -S`
-7. Stop the service:  
-  `$ sudo service fail2ban stop`
-8. Start it again:  
-  `$ sudo service fail2ban start`
-
-### 8 - Configure the local timezone to UTC
-Source: [Ubuntu documentation][16]
-
-1. Open the timezone selection dialog:  
-  `$ sudo dpkg-reconfigure tzdata`
-2. Then chose 'None of the above', then UTC.
-3. *Setup the ntp daemon ntpd for regular and improving time sync:  
-  `$ sudo apt-get install ntp`
-4. *Chose closer NTP time servers:  
-  1. Open the NTP configuration file:  
-    `$ sudo vim /etc/ntp.conf`
-  2. Open http://www.pool.ntp.org/en/ and choose the pool zone closest to you and replace the given servers with the new server list.  
-
-### 9 - Install and configure Apache to serve a Python mod_wsgi application
-Source: [Udacity][17]
-
-1. Install Apache web server:  
-  `$ sudo apt-get install apache2`
-2. Open a browser and open your public ip address, e.g. http://52.25.0.41/ - It should  say 'It works!' on the top of the page.
-3. Install **mod_wsgi** for serving Python apps from Apache and the helper package **python-setuptools**:  
-  `$ sudo apt-get install python-setuptools libapache2-mod-wsgi`
-4. Restart the Apache server for mod_wsgi to load:  
-  `$ sudo service apache2 restart`  
-5. *Get rid of the message "Could not reliably determine the servers's fully qualified domain name" after restart
-  Source: [Ask Ubuntu][18]
-  1. Create an empty Apache config file with the hostname:  
-    `$ echo "ServerName HOSTNAME" | sudo tee /etc/apache2/conf-available/fqdn.conf`
-  2. Enable the new config file:  
-    `$ sudo a2enconf fqdn`
-
-### 11 - Install git, clone and setup your Catalog App project
-As this is by far the biggest project task, it is split in several parts.
-#### 11.1 - Install and configure git
-Source: [GitHub][19]
-        
-1. Install Git:  
-  `$ sudo apt-get install git`
-2. Set your name, e.g. for the commits:  
-  `$ git config --global user.name "YOUR NAME"`
-3. Set up your email address to connect your commits to your account:  
-  `$ git config --global user.email "YOUR EMAIL ADDRESS"`
-
-#### 11.2 - Setup for deploying a Flask Application on Ubuntu VPS
-Source: [DigitalOcean][20]
-
-1. Extend Python with additional packages that enable Apache to serve Flask applications:  
-  `$ sudo apt-get install libapache2-mod-wsgi python-dev`
-2. Enable mod_wsgi (if not already enabled):  
-  `$ sudo a2enmod wsgi`
-3. Create a Flask app:  
-  1. Move to the www directory:  
-    `$ cd /var/www`
-  2. Setup a directory for the app, e.g. catalog:  
-    1. `$ sudo mkdir catalog`  
-    2. `$ cd catalog` and `$ sudo mkdir catalog`  
-    3. `$ cd catalog` and `$ sudo mkdir static templates`  
-    4. Create the file that will contain the flask application logic:  
-      `$ sudo nano __init__.py`
-    5. Paste in the following code:  
-    ```python  
-      from flask import Flask  
+### 12. Install git, Clone the Catalog app from Github
+1. Install git: `sudo apt-get install git`
+2. Setup for deploying a Flask Application on Ubuntu VPS
+-  `$ sudo apt-get install libapache2-mod-wsgi python-dev`
+-  `$ sudo a2enmod wsgi`
+-  `$ cd /var/www`
+-  `$ sudo mkdir catalog`  
+-  `$ cd catalog` 
+-  `$ sudo mkdir catalog`  
+-  `$ cd catalog` 
+-  `$ sudo mkdir static templates`  
+-  `$ sudo nano __init__.py`
+-  Paste in the following code:  
+    ```from flask import Flask  
       app = Flask(__name__)  
       @app.route("/")  
       def hello():  
-        return "Veni vidi vici!!"  
+        return "Hello App"  
       if __name__ == "__main__":  
-        app.run()  
-    ```  
+        app.run() ```  
 4. Install Flask
-  1. Install pip installer:  
-    `$ sudo apt-get install python-pip` 
-  2. Install virtualenv:  
-    `$ sudo pip install virtualenv`
-  3. Set virtual environment to name 'venv':  
-    `$ sudo virtualenv venv`
-  4. Enable all permissions for the new virtual environment (no sudo should be used within):  
-    Source: [Stackoverflow][21]              
-    `$ sudo chmod -R 777 venv`
-  5. Activate the virtual environment:  
-    `$ source venv/bin/activate`
-  6. Install Flask inside the virtual environment:  
-    `$ pip install Flask`
-  7. Run the app:  
-    `$ python __init__.py`
-  8. Deactivate the environment:  
-    `$ deactivate`
+  - `$ sudo apt-get install python-pip` 
+  - `$ sudo pip install virtualenv`
+  - `$ sudo virtualenv venv`
+  - `$ sudo chmod -R 777 venv`
+  - `$ source venv/bin/activate`
+  - `$ pip install httplib2`
+  - `$ pip install requests`
+  - `$ pip install Flask`
+  - `$ deactivate`
 5. Configure and Enable a New Virtual Host#
-  1. Create a virtual host config file  
-    `$ sudo nano /etc/apache2/sites-available/catalog.conf`
-  2. Paste in the following lines of code and change names and addresses regarding your application:  
+ - `$ sudo nano /etc/apache2/sites-available/catalog.conf`
+ - Paste in the following lines of code and change names and addresses regarding your application:  
   ```
     <VirtualHost *:80>
         ServerName PUBLIC-IP-ADDRESS
@@ -301,12 +127,10 @@ Source: [DigitalOcean][20]
         CustomLog ${APACHE_LOG_DIR}/access.log combined
     </VirtualHost>
   ```
-  3. Enable the virtual host:  
-    `$ sudo a2ensite catalog`
-6. Create the .wsgi File and Restart Apache
-  1. Create wsgi file:  
-    `$ cd /var/www/catalog` and `$ sudo vim catalog.wsgi`
-  2. Paste in the following lines of code:  
+ - `$ sudo a2ensite catalog`
+ - `$ cd /var/www/catalog` 
+ - `$ sudo nano catalog.wsgi`
+ - Paste in the following:  
   ```
     #!/usr/bin/python
     import sys
@@ -315,21 +139,14 @@ Source: [DigitalOcean][20]
     sys.path.insert(0,"/var/www/catalog/")
     
     from catalog import app as application
-    application.secret_key = 'Add your secret key'
+    application.secret_key = 'secret-key'
   ```
-  7. Restart Apache:  
-    `$ sudo service apache2 restart`
+  - `$ sudo service apache2 restart`
+6. Clone project from GitHub:
+ `$ git clone https://github.com/arslanyzl/catalog-item.git`
+ Move all to `/var/www/catalog/catalog/`
 
-#### 11.3 - Clone GitHub repository and make it web inaccessible
-1. Clone project 3 solution repository on GitHub:  
-  `$ git clone https://github.com/stueken/FSND-P3_Music-Catalog-Web-App.git`
-2. Move all content of created FSND-P3_Music-Catalog-Web-App directory to `/var/www/catalog/catalog/`-directory and delete the leftover empty directory.
-3. Make the GitHub repository inaccessible:  
-  Source: [Stackoverflow][22]
-  1. Create and open .htaccess file:  
-    `$ cd /var/www/catalog/` and `$ sudo vim .htaccess` 
-  2. Paste in the following:  
-    `RedirectMatch 404 /\.git`
+
 
 #### 11.4 - Install needed modules & packages
 1. Activate virtual environment:  
