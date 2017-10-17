@@ -51,7 +51,7 @@ Add the following text 'grader ALL=(ALL:ALL) ALL'
 4. Login using: `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@13.58.112.171`
 	
 ### 9. Configure the local timezone to UTC.
- `sudo dpkg-reconfigure tzdata`
+ 	$ sudo dpkg-reconfigure tzdata
 
 ### 10. Install and configure Apache to serve a Python mod_wsgi application.
 1. Install Apache `sudo apt-get install apache2`
