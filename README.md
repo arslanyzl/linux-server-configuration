@@ -105,7 +105,7 @@ Add the following text 'grader ALL=(ALL:ALL) ALL'
   - `$ pip install requests`
   - `$ pip install Flask`
   - `$ deactivate`
-5. Configure and Enable a New Virtual Host#
+5. New Virtual Host Configuration#
  - `$ sudo nano /etc/apache2/sites-available/catalog.conf`
  - Paste in the following lines of code and change names and addresses regarding your application:  
   ```
