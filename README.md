@@ -51,7 +51,7 @@ Add the following text 'grader ALL=(ALL:ALL) ALL'
 4. Login using: `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@13.58.112.171`
 	
 ### 9. Configure the local timezone to UTC.
-Configure the time zone `sudo dpkg-reconfigure tzdata`
+Time zone configuration UTC `sudo dpkg-reconfigure tzdata`
 
 ### 10. Install and configure Apache to serve a Python mod_wsgi application.
 1. Install Apache `sudo apt-get install apache2`
@@ -154,6 +154,3 @@ Configure the time zone `sudo dpkg-reconfigure tzdata`
  - [Udacity](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379)
  - [Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
  
-
-
-
