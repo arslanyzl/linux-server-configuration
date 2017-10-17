@@ -15,7 +15,7 @@ You will take a baseline installation of a Linux server and prepare it to host y
 5. SSH into the instance:  
   `$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@13.58.112.171`
   
-### 3. Update all currently installed packages.
+### 3. Update installed packages.
 
 1. Update the list of available packages:  
   `$ sudo apt-get update`
@@ -51,7 +51,7 @@ Add the following text 'grader ALL=(ALL:ALL) ALL'
 4. Login using: `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@13.58.112.171`
 	
 ### 9. Configure the local timezone to UTC.
-Time zone configuration UTC `sudo dpkg-reconfigure tzdata`
+ `sudo dpkg-reconfigure tzdata`
 
 ### 10. Install and configure Apache to serve a Python mod_wsgi application.
 1. Install Apache `sudo apt-get install apache2`
@@ -100,7 +100,6 @@ Time zone configuration UTC `sudo dpkg-reconfigure tzdata`
   - `$ sudo pip install virtualenv`
   - `$ sudo pip install sqlalchemy`
   - `$ sudo virtualenv venv`
-  - `$ sudo chmod -R 777 venv`
   - `$ source venv/bin/activate`
   - `$ pip install httplib2`
   - `$ pip install requests`
