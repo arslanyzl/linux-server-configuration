@@ -13,7 +13,7 @@ You will take a baseline installation of a Linux server and prepare it to host y
 4. Set file rights:  
   `$ chmod 600 ~/.ssh/name-of-privet-key`
 5. SSH into the instance:  
-  `$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@PUPLIC-IP-ADDRESS`
+  `$ ssh -i ~/.ssh/name-of-privet-key.rsa ubuntu@13.58.112.171`
   
 ### 3. Update all currently installed packages.
 
@@ -27,8 +27,8 @@ You will take a baseline installation of a Linux server and prepare it to host y
 1. Open the config file:  
     `$ sudo nano /etc/ssh/sshd_config`  
 2. Change to Port 2200.
-3. Change `PermitRootLogin` from `without-password` to `no`.
-4. Append `AllowUsers NEWUSER`.  
+3. Change `PermitRootLogin` to `no`.
+4. Add `AllowUsers NEWUSER`.  
 
 ### 5. Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
          $ sudo ufw allow 2200/tcp
@@ -47,8 +47,8 @@ Add the following text 'grader ALL=(ALL:ALL) ALL'
 1. On your local machine run: 
 	'$ ssh-keygen'
 2. Genarated key located in your local machine .shh directory, copy contain of this file to '/home/grader/.ssh/authorized_keys' 
-3. Restart ssh with `sudo service ssh restart`
-4. Now you are only able to login using `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@PUPLIC-IP-ADDRESS`
+3. Restart ssh:  `sudo service ssh restart`
+4. Login using: `ssh -i ~/.ssh/name-of-keygen.rsa -p 2200 grader@13.58.112.171`
 	
 ### 9. Configure the local timezone to UTC.
 Configure the time zone `sudo dpkg-reconfigure tzdata`
@@ -98,6 +98,7 @@ Configure the time zone `sudo dpkg-reconfigure tzdata`
 4. Install Flask
   - `$ sudo apt-get install python-pip` 
   - `$ sudo pip install virtualenv`
+  - `$ sudo pip install sqlalchemy`
   - `$ sudo virtualenv venv`
   - `$ sudo chmod -R 777 venv`
   - `$ source venv/bin/activate`
@@ -110,8 +111,8 @@ Configure the time zone `sudo dpkg-reconfigure tzdata`
  - Paste in the following lines of code and change names and addresses regarding your application:  
   ```
     <VirtualHost *:80>
-        ServerName PUBLIC-IP-ADDRESS
-        ServerAdmin admin@PUBLIC-IP-ADDRESS
+        ServerName 13.58.112.171
+        ServerAdmin admin@13.58.112.171
         WSGIScriptAlias / /var/www/catalog/catalog.wsgi
         <Directory /var/www/catalog/catalog/>
             Order allow,deny
